@@ -1,0 +1,516 @@
+/**
+ * Excercises the reflection API for HPOneView API classes.  
+ */
+package com.hp.hponeview.test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
+import com.hp.hponeview.rest.activity.ActAlertForId;
+import com.hp.hponeview.rest.activity.ActAlertList;
+import com.hp.hponeview.rest.activity.ActAuditLogs;
+import com.hp.hponeview.rest.activity.ActEventForId;
+import com.hp.hponeview.rest.activity.ActEventList;
+import com.hp.hponeview.rest.activity.ActTaskForId;
+import com.hp.hponeview.rest.activity.ActTaskList;
+import com.hp.hponeview.rest.activity.ActTaskTreeForId;
+import com.hp.hponeview.rest.facilities.FacDatacenterForId;
+import com.hp.hponeview.rest.facilities.FacDatacenterList;
+import com.hp.hponeview.rest.facilities.FacDatacenterVisualContentForId;
+import com.hp.hponeview.rest.facilities.FacPowerDeviceForId;
+import com.hp.hponeview.rest.facilities.FacPowerDeviceList;
+import com.hp.hponeview.rest.facilities.FacPowerDevicePowerStateForId;
+import com.hp.hponeview.rest.facilities.FacPowerDeviceUidStateForId;
+import com.hp.hponeview.rest.facilities.FacPowerDeviceUtilizationForId;
+import com.hp.hponeview.rest.facilities.FacRackDeviceTopologyForId;
+import com.hp.hponeview.rest.facilities.FacRackForId;
+import com.hp.hponeview.rest.facilities.FacRackList;
+import com.hp.hponeview.rest.network.NetConnectionTemplateForId;
+import com.hp.hponeview.rest.network.NetConnectionTemplateList;
+import com.hp.hponeview.rest.network.NetConnectionTemplateListSchema;
+import com.hp.hponeview.rest.network.NetDccVlanForIdAndPort;
+import com.hp.hponeview.rest.network.NetDefaultConnectionTemplate;
+import com.hp.hponeview.rest.network.NetEthernetNetworkForId;
+import com.hp.hponeview.rest.network.NetEthernetNetworkList;
+import com.hp.hponeview.rest.network.NetEthernetNetworkListSchema;
+import com.hp.hponeview.rest.network.NetFcNetworkForId;
+import com.hp.hponeview.rest.network.NetFcNetworkList;
+import com.hp.hponeview.rest.network.NetFcNetworkListSchema;
+import com.hp.hponeview.rest.network.NetInterconnectForId;
+import com.hp.hponeview.rest.network.NetInterconnectList;
+import com.hp.hponeview.rest.network.NetInterconnectListSchema;
+import com.hp.hponeview.rest.network.NetInterconnectNameServerListForId;
+import com.hp.hponeview.rest.network.NetInterconnectPortForIdAndPortId;
+import com.hp.hponeview.rest.network.NetInterconnectPortListForId;
+import com.hp.hponeview.rest.network.NetInterconnectStatisticsForId;
+import com.hp.hponeview.rest.network.NetInterconnectStatisticsForIdAndPortName;
+import com.hp.hponeview.rest.network.NetInterconnectStatisticsForIdAndPortNameAndSubPort;
+import com.hp.hponeview.rest.network.NetInterconnectTypeForId;
+import com.hp.hponeview.rest.network.NetInterconnectTypeList;
+import com.hp.hponeview.rest.network.NetInterconnectTypeListSchema;
+import com.hp.hponeview.rest.network.NetLogicalDownlinkForId;
+import com.hp.hponeview.rest.network.NetLogicalDownlinkList;
+import com.hp.hponeview.rest.network.NetLogicalDownlinkListSchema;
+import com.hp.hponeview.rest.network.NetLogicalDownlinkWithoutEthernetForId;
+import com.hp.hponeview.rest.network.NetLogicalDownlinkWithoutEthernetList;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectFibListForId;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectFirmwareForId;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectForId;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectGroupDefaultSettings;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectGroupForId;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectGroupList;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectGroupListSchema;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectGroupSettingsForIdAndSettingsId;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectList;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectListSchema;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectPortMonitorForId;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectSnmpConfigForId;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectTelemetryConfigForIdAndTcid;
+import com.hp.hponeview.rest.network.NetLogicalInterconnectUnassignedPortMonitorUplinkPortsForId;
+import com.hp.hponeview.rest.network.NetNetworkSetForId;
+import com.hp.hponeview.rest.network.NetNetworkSetList;
+import com.hp.hponeview.rest.network.NetNetworkSetListSchema;
+import com.hp.hponeview.rest.network.NetNetworkSetWithoutEthernetForId;
+import com.hp.hponeview.rest.network.NetNetworkSetWithoutEthernetList;
+import com.hp.hponeview.rest.network.NetSwitchEnvConfigForId;
+import com.hp.hponeview.rest.network.NetSwitchForId;
+import com.hp.hponeview.rest.network.NetSwitchList;
+import com.hp.hponeview.rest.network.NetSwitchListSchema;
+import com.hp.hponeview.rest.network.NetUplinkSetForId;
+import com.hp.hponeview.rest.network.NetUplinkSetList;
+import com.hp.hponeview.rest.network.NetUplinkSetListSchema;
+import com.hp.hponeview.rest.sans.SansDeviceManagerForId;
+import com.hp.hponeview.rest.sans.SansDeviceManagerList;
+import com.hp.hponeview.rest.sans.SansManagedSanForId;
+import com.hp.hponeview.rest.sans.SansManagedSanList;
+import com.hp.hponeview.rest.sans.SansProviderList;
+import com.hp.hponeview.rest.search.SrchAggTreeForUri;
+import com.hp.hponeview.rest.search.SrchAssociationResourceList;
+import com.hp.hponeview.rest.search.SrchAssociationsList;
+import com.hp.hponeview.rest.search.SrchLabelForId;
+import com.hp.hponeview.rest.search.SrchLabelList;
+import com.hp.hponeview.rest.search.SrchLabelResourcesForUri;
+import com.hp.hponeview.rest.search.SrchResourceForUri;
+import com.hp.hponeview.rest.search.SrchResourcesList;
+import com.hp.hponeview.rest.search.SrchSuggestions;
+import com.hp.hponeview.rest.search.SrchTreeForUri;
+import com.hp.hponeview.rest.search.SrchTreeList;
+import com.hp.hponeview.rest.search.SrchTreeMinified;
+import com.hp.hponeview.rest.search.SrchTreeMinifiedForUri;
+import com.hp.hponeview.rest.security.SecActiveUserSessionList;
+import com.hp.hponeview.rest.security.SecCaRootCertificate;
+import com.hp.hponeview.rest.security.SecCategoryActionsList;
+import com.hp.hponeview.rest.security.SecCertificateCaCRL;
+import com.hp.hponeview.rest.security.SecGroupToRoleMappingList;
+import com.hp.hponeview.rest.security.SecGroupToRoleMappingListForDomain;
+import com.hp.hponeview.rest.security.SecGroupToRoleMappingListForDomainAndGroup;
+import com.hp.hponeview.rest.security.SecHttpsCertificate;
+import com.hp.hponeview.rest.security.SecHttpsRemoteCertForAddress;
+import com.hp.hponeview.rest.security.SecLoginDomainAllowLocalLogin;
+import com.hp.hponeview.rest.security.SecLoginDomainConfigForDomainName;
+import com.hp.hponeview.rest.security.SecLoginDomainDefault;
+import com.hp.hponeview.rest.security.SecLoginDomainGlobalSettings;
+import com.hp.hponeview.rest.security.SecLoginDomainList;
+import com.hp.hponeview.rest.security.SecRabbitMqCertForAlias;
+import com.hp.hponeview.rest.security.SecRabbitMqKeypairForAlias;
+import com.hp.hponeview.rest.security.SecRabbitMqKeysForAlias;
+import com.hp.hponeview.rest.security.SecRoleCategoryActionsList;
+import com.hp.hponeview.rest.security.SecRoleForRoleName;
+import com.hp.hponeview.rest.security.SecRoleList;
+import com.hp.hponeview.rest.security.SecRoleListForUser;
+import com.hp.hponeview.rest.security.SecSessionIdleTimeout;
+import com.hp.hponeview.rest.security.SecSessionUserList;
+import com.hp.hponeview.rest.security.SecSslCertificateForId;
+import com.hp.hponeview.rest.security.SecSslCertificatesList;
+import com.hp.hponeview.rest.security.SecUserForUserName;
+import com.hp.hponeview.rest.security.SecUserList;
+import com.hp.hponeview.rest.security.SecUserListForRole;
+import com.hp.hponeview.rest.security.SecUserSessionList;
+import com.hp.hponeview.rest.servers.SrvAvailableNetworkList;
+import com.hp.hponeview.rest.servers.SrvAvailableNetworkListSchema;
+import com.hp.hponeview.rest.servers.SrvAvailableServerList;
+import com.hp.hponeview.rest.servers.SrvAvailableServerListSchema;
+import com.hp.hponeview.rest.servers.SrvAvailableStorageSystemList;
+import com.hp.hponeview.rest.servers.SrvAvailableTargetList;
+import com.hp.hponeview.rest.servers.SrvConnectionForId;
+import com.hp.hponeview.rest.servers.SrvConnectionList;
+import com.hp.hponeview.rest.servers.SrvConnectionListSchema;
+import com.hp.hponeview.rest.servers.SrvEnclosureActiveOaSsoUrlForId;
+import com.hp.hponeview.rest.servers.SrvEnclosureEnvConfigForId;
+import com.hp.hponeview.rest.servers.SrvEnclosureForId;
+import com.hp.hponeview.rest.servers.SrvEnclosureGroupForId;
+import com.hp.hponeview.rest.servers.SrvEnclosureGroupList;
+import com.hp.hponeview.rest.servers.SrvEnclosureGroupListSchema;
+import com.hp.hponeview.rest.servers.SrvEnclosureGroupScriptForId;
+import com.hp.hponeview.rest.servers.SrvEnclosureList;
+import com.hp.hponeview.rest.servers.SrvEnclosureListSchema;
+import com.hp.hponeview.rest.servers.SrvEnclosureScriptForId;
+import com.hp.hponeview.rest.servers.SrvEnclosureStandbyOaSsoUrlForId;
+import com.hp.hponeview.rest.servers.SrvEnclosureUtilizationForId;
+import com.hp.hponeview.rest.servers.SrvHardwareEnvConfigForId;
+import com.hp.hponeview.rest.servers.SrvHardwareForId;
+import com.hp.hponeview.rest.servers.SrvHardwareIloSsoUrlForId;
+import com.hp.hponeview.rest.servers.SrvHardwareJavaRemoteConsoleUrlForId;
+import com.hp.hponeview.rest.servers.SrvHardwareList;
+import com.hp.hponeview.rest.servers.SrvHardwareListSchema;
+import com.hp.hponeview.rest.servers.SrvHardwareRemoteConsoleUrlForId;
+import com.hp.hponeview.rest.servers.SrvHardwareTypeForId;
+import com.hp.hponeview.rest.servers.SrvHardwareTypeList;
+import com.hp.hponeview.rest.servers.SrvHardwareTypeListSchema;
+import com.hp.hponeview.rest.servers.SrvHardwareUtilizationForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolGenerateForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolSchema;
+import com.hp.hponeview.rest.servers.SrvIdPoolVmacRangeAllocFragListForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVmacRangeForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVmacRangeFreeFragListForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVmacRangeSchema;
+import com.hp.hponeview.rest.servers.SrvIdPoolVsnRangeAllocFragListForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVsnRangeForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVsnRangeFreeFragListForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVsnRangeSchema;
+import com.hp.hponeview.rest.servers.SrvIdPoolVwwnRangeAllocFragListForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVwwnRangeForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVwwnRangeFreeFragListForId;
+import com.hp.hponeview.rest.servers.SrvIdPoolVwwnRangeSchema;
+import com.hp.hponeview.rest.servers.SrvProfileForId;
+import com.hp.hponeview.rest.servers.SrvProfileList;
+import com.hp.hponeview.rest.servers.SrvProfileListSchema;
+import com.hp.hponeview.rest.servers.SrvProfileMessagesForId;
+import com.hp.hponeview.rest.servers.SrvProfileMessagesSchema;
+import com.hp.hponeview.rest.servers.SrvProfilePortModel;
+import com.hp.hponeview.rest.servers.SrvProfilePortModelSchema;
+import com.hp.hponeview.rest.settings.StgBackupForId;
+import com.hp.hponeview.rest.settings.StgBackupList;
+import com.hp.hponeview.rest.settings.StgDomainForId;
+import com.hp.hponeview.rest.settings.StgDomainList;
+import com.hp.hponeview.rest.settings.StgDomainListSchema;
+import com.hp.hponeview.rest.settings.StgEthernetNetworkLimitsForId;
+import com.hp.hponeview.rest.settings.StgEulaStatus;
+import com.hp.hponeview.rest.settings.StgFcNetworkLimitsForId;
+import com.hp.hponeview.rest.settings.StgFirmwareDocForNameAndType;
+import com.hp.hponeview.rest.settings.StgFirmwareDriverForId;
+import com.hp.hponeview.rest.settings.StgFirmwareDriverList;
+import com.hp.hponeview.rest.settings.StgFirmwareDriverListSchema;
+import com.hp.hponeview.rest.settings.StgFirmwareNotification;
+import com.hp.hponeview.rest.settings.StgFirmwarePending;
+import com.hp.hponeview.rest.settings.StgFirmwareVerificationKey;
+import com.hp.hponeview.rest.settings.StgGlobalSettingsForId;
+import com.hp.hponeview.rest.settings.StgGlobalSettingsList;
+import com.hp.hponeview.rest.settings.StgHealthStatus;
+import com.hp.hponeview.rest.settings.StgLicenseForId;
+import com.hp.hponeview.rest.settings.StgLicenseList;
+import com.hp.hponeview.rest.settings.StgLicenseSummaryList;
+import com.hp.hponeview.rest.settings.StgNetworkInterfaceForMacAddress;
+import com.hp.hponeview.rest.settings.StgNetworkInterfaceMacAddressList;
+import com.hp.hponeview.rest.settings.StgNetworkInterfaces;
+import com.hp.hponeview.rest.settings.StgNetworkSetLimitsForId;
+import com.hp.hponeview.rest.settings.StgNodeInfoStatus;
+import com.hp.hponeview.rest.settings.StgNodeInfoVersion;
+import com.hp.hponeview.rest.settings.StgReadCommunityString;
+import com.hp.hponeview.rest.settings.StgRestoreFailure;
+import com.hp.hponeview.rest.settings.StgRestoreForId;
+import com.hp.hponeview.rest.settings.StgRestoreList;
+import com.hp.hponeview.rest.settings.StgServiceAccess;
+import com.hp.hponeview.rest.settings.StgStartupProgress;
+import com.hp.hponeview.rest.settings.StgTrapDestinationForId;
+import com.hp.hponeview.rest.settings.StgTrapDestinationList;
+import com.hp.hponeview.rest.settings.StgVersion;
+import com.hp.hponeview.rest.storage.StoAttachVolumeList;
+import com.hp.hponeview.rest.storage.StoConnectableVolumeTemplateList;
+import com.hp.hponeview.rest.storage.StoHostTypeList;
+import com.hp.hponeview.rest.storage.StoManagedPortsListForId;
+import com.hp.hponeview.rest.storage.StoMangedPortForIdAndPortId;
+import com.hp.hponeview.rest.storage.StoPoolForArrayId;
+import com.hp.hponeview.rest.storage.StoPoolForId;
+import com.hp.hponeview.rest.storage.StoPoolList;
+import com.hp.hponeview.rest.storage.StoSystemForId;
+import com.hp.hponeview.rest.storage.StoSystemList;
+import com.hp.hponeview.rest.storage.StoVolumeAttachmentForId;
+import com.hp.hponeview.rest.storage.StoVolumeAttachmentList;
+import com.hp.hponeview.rest.storage.StoVolumeAttachmentPathForIdAndPathId;
+import com.hp.hponeview.rest.storage.StoVolumeAttachmentPathsForId;
+import com.hp.hponeview.rest.storage.StoVolumeForId;
+import com.hp.hponeview.rest.storage.StoVolumeList;
+import com.hp.hponeview.rest.storage.StoVolumeTemplateForId;
+import com.hp.hponeview.rest.storage.StoVolumeTemplateList;
+import com.hp.hponeview.rest.uncategorized.UncUnmanagedDeviceEnvConfigForId;
+import com.hp.hponeview.rest.uncategorized.UncUnmanagedDeviceForId;
+import com.hp.hponeview.rest.uncategorized.UncUnmanagedDeviceList;
+
+import org.junit.Test;
+
+import java.util.Collection;
+
+@RunWith(Parameterized.class)
+public class ReflectionTest extends TestBase {
+	private Class<?> testClass;
+	
+	public ReflectionTest( Class<?> testClass, Object ignore ) {
+		this.testClass = testClass;
+	}
+	
+	@Parameters
+	public static Collection<Class<?>[]> classList() {
+		final Class<?>[][] data = {
+		    {ActAlertForId.class, null},
+		    {ActAlertList.class, null},
+		    {ActAuditLogs.class, null},
+		    {ActEventForId.class, null},
+		    {ActEventList.class, null},
+		    {ActTaskForId.class, null},
+		    {ActTaskList.class, null},
+		    {ActTaskTreeForId.class, null},
+		    {FacDatacenterForId.class, null},
+		    {FacDatacenterList.class, null},
+		    {FacDatacenterVisualContentForId.class, null},
+		    {FacPowerDeviceForId.class, null},
+		    {FacPowerDeviceList.class, null},
+		    {FacPowerDevicePowerStateForId.class, null},
+		    {FacPowerDeviceUidStateForId.class, null},
+		    {FacPowerDeviceUtilizationForId.class, null},
+		    {FacRackDeviceTopologyForId.class, null},
+		    {FacRackForId.class, null},
+		    {FacRackList.class, null},
+		    {NetConnectionTemplateForId.class, null},
+		    {NetConnectionTemplateList.class, null},
+		    {NetConnectionTemplateListSchema.class, null},
+		    {NetDccVlanForIdAndPort.class, null},
+		    {NetDefaultConnectionTemplate.class, null},
+		    {NetEthernetNetworkForId.class, null},
+		    {NetEthernetNetworkList.class, null},
+		    {NetEthernetNetworkListSchema.class, null},
+		    {NetFcNetworkForId.class, null},
+		    {NetFcNetworkList.class, null},
+		    {NetFcNetworkListSchema.class, null},
+		    {NetInterconnectForId.class, null},
+		    {NetInterconnectList.class, null},
+		    {NetInterconnectListSchema.class, null},
+		    {NetInterconnectNameServerListForId.class, null},
+		    {NetInterconnectPortForIdAndPortId.class, null},
+		    {NetInterconnectPortListForId.class, null},
+		    {NetInterconnectStatisticsForId.class, null},
+		    {NetInterconnectStatisticsForIdAndPortName.class, null},
+		    {NetInterconnectStatisticsForIdAndPortNameAndSubPort.class, null},
+		    {NetInterconnectTypeForId.class, null},
+		    {NetInterconnectTypeList.class, null},
+		    {NetInterconnectTypeListSchema.class, null},
+		    {NetLogicalDownlinkForId.class, null},
+		    {NetLogicalDownlinkList.class, null},
+		    {NetLogicalDownlinkListSchema.class, null},
+		    {NetLogicalDownlinkWithoutEthernetForId.class, null},
+		    {NetLogicalDownlinkWithoutEthernetList.class, null},
+		    {NetLogicalInterconnectFibListForId.class, null},
+		    {NetLogicalInterconnectFirmwareForId.class, null},
+		    {NetLogicalInterconnectForId.class, null},
+		    {NetLogicalInterconnectGroupDefaultSettings.class, null},
+		    {NetLogicalInterconnectGroupForId.class, null},
+		    {NetLogicalInterconnectGroupList.class, null},
+		    {NetLogicalInterconnectGroupListSchema.class, null},
+		    {NetLogicalInterconnectGroupSettingsForIdAndSettingsId.class, null},
+		    {NetLogicalInterconnectList.class, null},
+		    {NetLogicalInterconnectListSchema.class, null},
+		    {NetLogicalInterconnectPortMonitorForId.class, null},
+		    {NetLogicalInterconnectSnmpConfigForId.class, null},
+		    {NetLogicalInterconnectTelemetryConfigForIdAndTcid.class, null},
+		    {NetLogicalInterconnectUnassignedPortMonitorUplinkPortsForId.class, null},
+		    {NetNetworkSetForId.class, null},
+		    {NetNetworkSetList.class, null},
+		    {NetNetworkSetListSchema.class, null},
+		    {NetNetworkSetWithoutEthernetForId.class, null},
+		    {NetNetworkSetWithoutEthernetList.class, null},
+		    {NetSwitchEnvConfigForId.class, null},
+		    {NetSwitchForId.class, null},
+		    {NetSwitchList.class, null},
+		    {NetSwitchListSchema.class, null},
+		    {NetUplinkSetForId.class, null},
+		    {NetUplinkSetList.class, null},
+		    {NetUplinkSetListSchema.class, null},
+		    {SansDeviceManagerForId.class, null},
+		    {SansDeviceManagerList.class, null},
+		    {SansManagedSanForId.class, null},
+		    {SansManagedSanList.class, null},
+		    {SansProviderList.class, null},
+		    {SrchAggTreeForUri.class, null},
+		    {SrchAssociationResourceList.class, null},
+		    {SrchAssociationsList.class, null},
+		    {SrchLabelForId.class, null},
+		    {SrchLabelList.class, null},
+		    {SrchLabelResourcesForUri.class, null},
+		    {SrchResourceForUri.class, null},
+		    {SrchResourcesList.class, null},
+		    {SrchSuggestions.class, null},
+		    {SrchTreeForUri.class, null},
+		    {SrchTreeList.class, null},
+		    {SrchTreeMinified.class, null},
+		    {SrchTreeMinifiedForUri.class, null},
+		    {SecActiveUserSessionList.class, null},
+		    {SecCaRootCertificate.class, null},
+		    {SecCategoryActionsList.class, null},
+		    {SecCertificateCaCRL.class, null},
+		    {SecGroupToRoleMappingList.class, null},
+		    {SecGroupToRoleMappingListForDomain.class, null},
+		    {SecGroupToRoleMappingListForDomainAndGroup.class, null},
+		    {SecHttpsCertificate.class, null},
+		    {SecHttpsRemoteCertForAddress.class, null},
+		    {SecLoginDomainAllowLocalLogin.class, null},
+		    {SecLoginDomainConfigForDomainName.class, null},
+		    {SecLoginDomainDefault.class, null},
+		    {SecLoginDomainGlobalSettings.class, null},
+		    {SecLoginDomainList.class, null},
+		    {SecRabbitMqCertForAlias.class, null},
+		    {SecRabbitMqKeypairForAlias.class, null},
+		    {SecRabbitMqKeysForAlias.class, null},
+		    {SecRoleCategoryActionsList.class, null},
+		    {SecRoleForRoleName.class, null},
+		    {SecRoleList.class, null},
+		    {SecRoleListForUser.class, null},
+		    {SecSessionIdleTimeout.class, null},
+		    {SecSessionUserList.class, null},
+		    {SecSslCertificateForId.class, null},
+		    {SecSslCertificatesList.class, null},
+		    {SecUserForUserName.class, null},
+		    {SecUserList.class, null},
+		    {SecUserListForRole.class, null},
+		    {SecUserSessionList.class, null},
+		    {SrvAvailableNetworkList.class, null},
+		    {SrvAvailableNetworkListSchema.class, null},
+		    {SrvAvailableServerList.class, null},
+		    {SrvAvailableServerListSchema.class, null},
+		    {SrvAvailableStorageSystemList.class, null},
+		    {SrvAvailableTargetList.class, null},
+		    {SrvConnectionForId.class, null},
+		    {SrvConnectionList.class, null},
+		    {SrvConnectionListSchema.class, null},
+		    {SrvEnclosureActiveOaSsoUrlForId.class, null},
+		    {SrvEnclosureEnvConfigForId.class, null},
+		    {SrvEnclosureForId.class, null},
+		    {SrvEnclosureGroupForId.class, null},
+		    {SrvEnclosureGroupList.class, null},
+		    {SrvEnclosureGroupListSchema.class, null},
+		    {SrvEnclosureGroupScriptForId.class, null},
+		    {SrvEnclosureList.class, null},
+		    {SrvEnclosureListSchema.class, null},
+		    {SrvEnclosureScriptForId.class, null},
+		    {SrvEnclosureStandbyOaSsoUrlForId.class, null},
+		    {SrvEnclosureUtilizationForId.class, null},
+		    {SrvHardwareEnvConfigForId.class, null},
+		    {SrvHardwareForId.class, null},
+		    {SrvHardwareIloSsoUrlForId.class, null},
+		    {SrvHardwareJavaRemoteConsoleUrlForId.class, null},
+		    {SrvHardwareList.class, null},
+		    {SrvHardwareListSchema.class, null},
+		    {SrvHardwareRemoteConsoleUrlForId.class, null},
+		    {SrvHardwareTypeForId.class, null},
+		    {SrvHardwareTypeList.class, null},
+		    {SrvHardwareTypeListSchema.class, null},
+		    {SrvHardwareUtilizationForId.class, null},
+		    {SrvIdPoolForId.class, null},
+		    {SrvIdPoolGenerateForId.class, null},
+		    {SrvIdPoolSchema.class, null},
+		    {SrvIdPoolVmacRangeAllocFragListForId.class, null},
+		    {SrvIdPoolVmacRangeForId.class, null},
+		    {SrvIdPoolVmacRangeFreeFragListForId.class, null},
+		    {SrvIdPoolVmacRangeSchema.class, null},
+		    {SrvIdPoolVsnRangeAllocFragListForId.class, null},
+		    {SrvIdPoolVsnRangeForId.class, null},
+		    {SrvIdPoolVsnRangeFreeFragListForId.class, null},
+		    {SrvIdPoolVsnRangeSchema.class, null},
+		    {SrvIdPoolVwwnRangeAllocFragListForId.class, null},
+		    {SrvIdPoolVwwnRangeForId.class, null},
+		    {SrvIdPoolVwwnRangeFreeFragListForId.class, null},
+		    {SrvIdPoolVwwnRangeSchema.class, null},
+		    {SrvProfileForId.class, null},
+		    {SrvProfileList.class, null},
+		    {SrvProfileListSchema.class, null},
+		    {SrvProfileMessagesForId.class, null},
+		    {SrvProfileMessagesSchema.class, null},
+		    {SrvProfilePortModel.class, null},
+		    {SrvProfilePortModelSchema.class, null},
+		    {StgBackupForId.class, null},
+		    {StgBackupList.class, null},
+		    {StgDomainForId.class, null},
+		    {StgDomainList.class, null},
+		    {StgDomainListSchema.class, null},
+		    {StgEthernetNetworkLimitsForId.class, null},
+		    {StgEulaStatus.class, null},
+		    {StgFcNetworkLimitsForId.class, null},
+		    {StgFirmwareDocForNameAndType.class, null},
+		    {StgFirmwareDriverForId.class, null},
+		    {StgFirmwareDriverList.class, null},
+		    {StgFirmwareDriverListSchema.class, null},
+		    {StgFirmwareNotification.class, null},
+		    {StgFirmwarePending.class, null},
+		    {StgFirmwareVerificationKey.class, null},
+		    {StgGlobalSettingsForId.class, null},
+		    {StgGlobalSettingsList.class, null},
+		    {StgHealthStatus.class, null},
+		    {StgLicenseForId.class, null},
+		    {StgLicenseList.class, null},
+		    {StgLicenseSummaryList.class, null},
+		    {StgNetworkInterfaceForMacAddress.class, null},
+		    {StgNetworkInterfaceMacAddressList.class, null},
+		    {StgNetworkInterfaces.class, null},
+		    {StgNetworkSetLimitsForId.class, null},
+		    {StgNodeInfoStatus.class, null},
+		    {StgNodeInfoVersion.class, null},
+		    {StgReadCommunityString.class, null},
+		    {StgRestoreFailure.class, null},
+		    {StgRestoreForId.class, null},
+		    {StgRestoreList.class, null},
+		    {StgServiceAccess.class, null},
+		    {StgStartupProgress.class, null},
+		    {StgTrapDestinationForId.class, null},
+		    {StgTrapDestinationList.class, null},
+		    {StgVersion.class, null},
+		    {StoAttachVolumeList.class, null},
+		    {StoConnectableVolumeTemplateList.class, null},
+		    {StoHostTypeList.class, null},
+		    {StoManagedPortsListForId.class, null},
+		    {StoMangedPortForIdAndPortId.class, null},
+		    {StoPoolForArrayId.class, null},
+		    {StoPoolForId.class, null},
+		    {StoPoolList.class, null},
+		    {StoSystemForId.class, null},
+		    {StoSystemList.class, null},
+		    {StoVolumeAttachmentForId.class, null},
+		    {StoVolumeAttachmentList.class, null},
+		    {StoVolumeAttachmentPathForIdAndPathId.class, null},
+		    {StoVolumeAttachmentPathsForId.class, null},
+		    {StoVolumeForId.class, null},
+		    {StoVolumeList.class, null},
+		    {StoVolumeTemplateForId.class, null},
+		    {StoVolumeTemplateList.class, null},
+		    {UncUnmanagedDeviceEnvConfigForId.class, null},
+		    {UncUnmanagedDeviceForId.class, null},
+		    {UncUnmanagedDeviceList.class, null},
+		};
+		return Arrays.asList(data);
+	}    
+	
+	@Test
+	public void testReflection() {
+		try {
+			Object obj = testClass.newInstance();
+			String className = testClass.toString();
+			Method m0 = testClass.getDeclaredMethod( "retType" );
+			Class<?> retType = (Class<?>)m0.invoke(obj);
+			String rt  = retType.toString();
+			Field f0 = testClass.getDeclaredField("_URI");
+			String uri = (String)f0.get(obj);
+			//logger.info( String.format( "Reflection \"%s\",\"%s\",\"%s\"\n", className, rt, uri ) );
+		} 
+		catch( Exception e ) {
+			fail( e.toString() );
+		}
+	}
+}

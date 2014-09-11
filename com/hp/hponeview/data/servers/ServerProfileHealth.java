@@ -1,0 +1,60 @@
+/*****************************************************************************
+*
+* copyright.txt
+*
+* Copyright 2013 Hewlett-Packard Development Company, L.P.
+*
+* Hewlett-Packard and the Hewlett-Packard logo are trademarks of
+* Hewlett-Packard Development Company, L.P. in the U.S. and/or other countries.
+*
+* Confidential computer software. Valid license from Hewlett-Packard required
+* for possession, use or copying. Consistent with FAR 12.211 and 12.212,
+* Commercial Computer Software, Computer Software Documentation, and Technical
+* Data for Commercial Items are licensed to the U.S. Government under
+* vendor's standard commercial license.
+*
+* Author:
+* 	Gary Hester
+* 
+* Description:
+*
+*****************************************************************************/
+package com.hp.hponeview.data.servers;
+
+public class ServerProfileHealth {
+	public class MessageInfo {
+		String  activityUri;
+		String  createdTime;
+		String  errorSource;
+		String  message;
+		String  messageId;
+		String  recommendedActions;
+		String  sourceName;
+		String  status;		// Critical | OK | Unknown | Warning
+	}
+	
+	public class ProfileConnectionStatus {
+		public Integer connectionId;
+		public MessageInfo [] messages;
+		public String  status;	// Critical | OK | Unknown | Warning
+	}
+	
+	public class ProfileFirmwareStatus	{
+		public MessageInfo [] messages;
+		public String  name;
+		public String  status;	// Critical | OK | Unknown | Warning
+		public String  version;
+	}
+
+	public class ProfileServerHardwareStatus {
+		public MessageInfo [] messages;
+		public String  serverHardwareUri;
+		public String  status;	// Critical | OK | Unknown | Warning
+	}
+	
+	public ProfileConnectionStatus [] connections;
+	public String eTag;
+	public ProfileFirmwareStatus firmwareStatus;
+	public ProfileServerHardwareStatus [] serverHardware;
+	public String type; // must be 'ServerProfileMessagesV1'
+}
